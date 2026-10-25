@@ -14,6 +14,7 @@ if "port" not in os.environ:
 # CONFIGURATION
 # ============================================================
 
+
 DB_CONFIG = {
     "host": os.environ["host"],
     "port": int(os.environ["port"]),
