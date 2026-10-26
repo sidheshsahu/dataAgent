@@ -1,9 +1,10 @@
 import os
 from pathlib import Path
-
 import psycopg2
 from psycopg2 import sql
 from dotenv import load_dotenv
+
+
 
 load_dotenv()
 
@@ -133,10 +134,8 @@ def main():
             with conn.cursor() as cursor:
                 cursor.execute(create_tables_sql)
 
-                # The inventory CSV stores dates as DD-MM-YYYY.
                 cursor.execute("SET LOCAL datestyle = 'ISO, DMY'")
 
-                # This script is a full CSV refresh; truncate children before parents.
                 cursor.execute("""
                     TRUNCATE TABLE
                         public.order_items,
