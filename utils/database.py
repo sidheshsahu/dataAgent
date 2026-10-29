@@ -22,6 +22,7 @@ class DatabaseUtil:
 
         schema_info_context = f"Database Schema: {schema_name}\n"
 
+
         try: 
 
             cursor.execute("SELECT table_name from information_schema.tables where table_schema = %s;", (schema_name,))
