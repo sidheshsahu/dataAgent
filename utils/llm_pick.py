@@ -1,14 +1,18 @@
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
+from langchain_google_genai import ChatGoogleGenerativeAI
+
+
+
+
+
 load_dotenv()
 
 def pick_llm(level: str):
     if level.lower() == "low":
-        llm = ChatGroq()
-    elif level.lower() == "medium":
-        llm = ChatGroq()
+        llm = ChatGoogleGenerativeAI(model="gemini-3.8-flash")
     elif level.lower() == "high":
-        llm = ChatGroq()
+        llm = ChatGroq(model="openai/gpt-oss-120b")
     else:
         raise ValueError(f"Unsupported level: {level}")
 
