@@ -4,13 +4,11 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 
 
-
-
 load_dotenv()
 
 def pick_llm(level: str):
     if level.lower() == "low":
-        llm = ChatGoogleGenerativeAI(model="gemini-3.8-flash")
+        llm = ChatGroq(model="openai/gpt-oss-120b")
     elif level.lower() == "high":
         llm = ChatGroq(model="openai/gpt-oss-120b")
     else:
