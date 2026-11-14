@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -183,19 +184,19 @@ def represent_final_answer(state: AgentSchema) -> AgentSchema:
 sql_agent_graph = StateGraph(AgentSchema)
 
 # Nodes
-sql_agent_graph.add_node(curate_ques,name="curate_ques")
-sql_agent_graph.add_node(prompt_query_context,name="prompt_query_context")
-sql_agent_graph.add_node(generate_sql,name="generate_sql")
-sql_agent_graph.add_node(is_safe_sql,name="is_safe_sql")
-sql_agent_graph.add_node(canceled_sql,name="canceled_sql")
-sql_agent_graph.add_node(execute_sql,name="execute_sql")
-sql_agent_graph.add_node(represent_final_answer,name="represent_final_answer")
+sql_agent_graph.add_node("Clarify Question", curate_ques)
+sql_agent_graph.add_node("Load Database Context", prompt_query_context)
+sql_agent_graph.add_node("Generate SQL", generate_sql)
+sql_agent_graph.add_node("Check SQL Safety", is_safe_sql)
+sql_agent_graph.add_node("Block Unsafe Query", canceled_sql)
+sql_agent_graph.add_node("Run SQL Query", execute_sql)
+sql_agent_graph.add_node("Format Final Answer", represent_final_answer)
 
 # Edges
-sql_agent_graph.add_edge(START, "curate_ques")
-sql_agent_graph.add_edge("curate_ques", "prompt_query_context")
-sql_agent_graph.add_edge("prompt_query_context", "generate_sql")
-sql_agent_graph.add_edge("generate_sql", "is_safe_sql")
+sql_agent_graph.add_edge(START, "Clarify Question")
+sql_agent_graph.add_edge("Clarify Question", "Load Database Context")
+sql_agent_graph.add_edge("Load Database Context", "Generate SQL")
+sql_agent_graph.add_edge("Generate SQL", "Check SQL Safety")
 
 # Codintional Edge Function
 def is_safe_sql_edge(state: AgentSchema) -> str:
@@ -207,30 +208,27 @@ def is_safe_sql_edge(state: AgentSchema) -> str:
     else :
         return "canceled_sql"
 
-sql_agent_graph.add_conditional_edges("is_safe_sql", is_safe_sql_edge,
+sql_agent_graph.add_conditional_edges("Check SQL Safety", is_safe_sql_edge,
                                       {
-                                          "execute_sql": "execute_sql",
-                                          "canceled_sql": "canceled_sql"
+                                          "execute_sql": "Run SQL Query",
+                                          "canceled_sql": "Block Unsafe Query"
                                       })
 
 # sql_agent_graph.add_edge("is_safe_sql", "execute_sql")
 # sql_agent_graph.add_edge("is_safe_sql", "canceled_sql")
 
-sql_agent_graph.add_edge("canceled_sql", END)
-sql_agent_graph.add_edge("execute_sql", "represent_final_answer")
-sql_agent_graph.add_edge("represent_final_answer", END)
+sql_agent_graph.add_edge("Block Unsafe Query", END)
+sql_agent_graph.add_edge("Run SQL Query", "Format Final Answer")
+sql_agent_graph.add_edge("Format Final Answer", END)
 
 # Compile the Graph
 sql_analyst = sql_agent_graph.compile()
 
 if __name__ == "__main__":
-
-
-    # Optional
-    # from IPython.display import display, Image
-    # img = Image(sql_analyst.get_graph().draw_mermaid_png())
-    # with open("sql_analyst_graph.png", "wb") as f:
-    #     f.write(img.data)
+    # Export the workflow diagram to the project root before running the agent.
+    graph_png = Path(__file__).resolve().parent.parent / "graph.png"
+    graph_png.write_bytes(sql_analyst.get_graph().draw_mermaid_png())
+    print(f"Graph saved to: {graph_png}")
 
     input_schema = {
         "messages": [],

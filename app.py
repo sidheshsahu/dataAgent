@@ -1,8 +1,6 @@
 import os
-
 import streamlit as st
 from dotenv import load_dotenv
-
 from agents.sql_agent import sql_analyst
 
 

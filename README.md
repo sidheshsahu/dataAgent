@@ -76,17 +76,3 @@ Alternatively, run the graph directly with `uv run python agents/sql_agent.py`.
 
 The app displays the generated SQL in an expandable panel for transparency. Do not expose a deployment with access to private or production data without appropriate authentication, network restrictions, and database permissions.
 
-## LinkedIn post draft
-
-I’m excited to share the first agent in my Blinkit Quick-Commerce Intelligence project: a SQL Analyst Agent that turns natural-language business questions into answers from PostgreSQL data.
-
-The agent uses LangGraph to structure the workflow: it prepares the question, inspects the database schema, generates SQL with Groq, checks the query with a structured LLM safety judge, executes approved queries, and explains the results in plain language. I also built a Streamlit chat UI so people can ask questions and inspect the generated SQL.
-
-The project currently works with customer, product, order, order-item, and inventory data. Example questions include identifying popular payment methods, top-selling products, delivery patterns, and inventory damage.
-
-This is the first agent in a planned multi-agent quick-commerce analytics project. I plan to add more agents in the future to cover additional analytics workflows.
-
-Built with Python, LangGraph, LangChain, Groq, PostgreSQL, and Streamlit.
-
-#AI #Agents #LangGraph #PostgreSQL #Streamlit #QuickCommerce #DataAnalytics #Blinkit
-
