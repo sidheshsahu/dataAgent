@@ -20,3 +20,25 @@ class JudgeSchema(BaseModel):
     comments : str = Field(..., description="Additional comments or feedback from the judge regarding the SQL query")
 
 
+class QualityCheck(BaseModel):
+    description: str = Field(
+        description="What this data quality check measures"
+    )
+    query: str = Field(
+        description="A read-only PostgreSQL SELECT query that measures the check"
+    )
+
+
+class QualityCheckPlan(BaseModel):
+    checks: list[QualityCheck] = Field(
+        description="The suggested data quality checks"
+    )
+
+
+class DataQualityState(TypedDict):
+    schema_name: str
+    schema_details: str
+    checks: list[dict[str, str]]
+    check_results: list[dict[str, Any]]
+    final_report: str
+    messages: list[Any]
